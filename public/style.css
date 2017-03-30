@@ -1,0 +1,16 @@
+/* css index */
+*{
+  box-sizing: border-box;
+}
+body{
+  background: #E2E2E2;
+}
+h1{
+  text-align: center;
+}
+.b-container{
+  display: flex;
+  justify-content: space-between;
+  max-width: 960px;
+  margin: auto;
+}
