@@ -32,10 +32,6 @@
 
 	event = {};
 
-	event.onChange=()=>{
-		console.log('onChange');
-	}
-
 	event.value = (e) => {
 		fn.appendOptions(e);
 	};
@@ -59,28 +55,35 @@
 	//agregando el atributo selected a la primera opción del select nativo a la primera carga de la web
 	fn.addSelectedFirsOption = () => {
 		$(st.select).each(function(i, e) {
-			firstOption = $(e).find('option')[0]
-			$(firstOption).attr('selected', true)
-			var text =	$(firstOption).text();
-			var containerText =	$(e).siblings(st.maskSelect).find(st.optionSelected)[0];
-			$(containerText).html(text);
 			fn.createItems(e, $(e).siblings(st.maskOption))
+			var option = $(e).find(':selected');
+			firstOption = $(e).find('option')[0];
+			var textFirstOption =	$(firstOption).text();
+			var textSelected = $(option).text();
+			var containerText =	$(e).siblings(st.maskSelect).find(st.optionSelected)[0];
 			var select = $(e).siblings('ul')[0];
-			var optionSelected = $(select).find('li')[0];
-			$(optionSelected).addClass('hover')
+			var optionSelected = $(select).find('li');
+			if (option[0] == firstOption) {
+				$(firstOption).attr('selected', true);
+				$(containerText).html(textFirstOption);
+				$(optionSelected[0]).addClass('hover')
+			}else{
+				var position = $(option).index();
+				$(containerText).html(textSelected);
+				$(optionSelected[position]).addClass('hover');
+			}
 		});
 	};
 
 	//Agregando el hover a la primera opción en la primera carga de la web
 	fn.addHoverFirstOption=(element)=>{
-		console.log('elementelement', element);
 		var ul = $(element).siblings('ul')[0];
 		var li = $(ul).find('li')[0];
 		var hover = $(ul).find('li').hasClass('hover');
 		if (!hover) {
 			$(li).addClass('hover')
 		}
-	}
+	};
 
 	//Apeneando los valores de las opciones a la máscara
 	fn.createItems = (maskSelect, ul) => {
@@ -101,7 +104,6 @@
 		$(target).siblings(st.maskOption).toggleClass('u-block');
 		//buscando la primera opcion con el selected
 		fn.addHoverFirstOption(target);
-		console.log('target',target);
 	};
 
 	//Apeneando el valor de la opción seleccionada
@@ -110,7 +112,6 @@
 		var value = $(target).text();
 		var container = $(target).parents(dom.container).children(st.maskSelect).find(st.optionSelected);
 		fn.hoverOptions(target);
-		console.log('containerText', container);
 		container.html(value);
 		$(st.maskOption).removeClass('u-block');
 		var textFocus = $(target).parents('ul').siblings(st.maskSelect)[0];
@@ -136,7 +137,6 @@
 		var optionSelected = $(select).find('option:selected')[0];
 		var nextOption = $(optionSelected).next('option')[0];
 		var prevOption = $(optionSelected).prev('option')[0];
-
 		if (e.keyCode === st.keyDown) {
 			fn.prevOption(prevOption, select, listOption, optionSelected,listOptionSelected, textOptionSelected, textOptionPrev);
 		} else if (e.keyCode === st.keyUp) {
@@ -160,14 +160,14 @@
 		}else{
 			fn.keyUp(optionSelected, prevOption, listOption, listOptionSelected, textOptionSelected, textOptionPrev);
 		}
-	}
+	};
 
 	//cerrar las opciones al dar enter
 	fn.closeOptionWithEnter = (e, mask) => {
 		var key = e.keyCode;
 		if (key === st.keyEnter) {
 			$(mask).toggleClass('u-block')
-		}else if (key === st.keyEsc) {
+		}else if ((key === st.keyEsc) || (key === 9)) {
 			$(mask).removeClass('u-block')
 		}
 	};
@@ -187,16 +187,16 @@
 
 	//volviendo a iterar las opciones down
 	fn.updatingOptionsDown = (select, listOption) => {
-			//fn.addSelectedFirsOption();
-			var firstOption = $(select).find('option')[0];
-			var lastOption = $(select).find('option').last();
-			$(lastOption).removeAttr('selected')
-			$(firstOption).attr('selected', true);
-			var text =	$(firstOption).text();
-			var containerText =	$(select).siblings(st.maskSelect).find(st.optionSelected)[0];
-			$(containerText).html(text);
-			$(listOption).last().removeClass('hover');
-			$(listOption).first().addClass('hover');
+		//fn.addSelectedFirsOption();
+		var firstOption = $(select).find('option')[0];
+		var lastOption = $(select).find('option').last();
+		$(lastOption).removeAttr('selected')
+		$(firstOption).attr('selected', true);
+		var text =	$(firstOption).text();
+		var containerText =	$(select).siblings(st.maskSelect).find(st.optionSelected)[0];
+		$(containerText).html(text);
+		$(listOption).last().removeClass('hover');
+		$(listOption).first().addClass('hover');
 	};
 
 	//volviendo a iterar las opciones up
