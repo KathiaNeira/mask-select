@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/KathiaNeira/mask-select/issues"
   },
-  "homepage": "https://github.com/KathiaNeira/mask-select#readme"
+  "homepage": "https://github.com/KathiaNeira/mask-select#readme",
+  "devDependencies": {
+    "express": "^4.15.2"
+  }
 }
