@@ -24,3 +24,6 @@ Estructura Html para que funcione la máscara de las opciones
 
 Versión de jquery:
 https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js
+
+Demo:
+https://kathianeira.github.io/mask-select/
