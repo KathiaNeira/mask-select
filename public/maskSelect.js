@@ -203,7 +203,7 @@
 	fn.updatingOptionsUP = (select, listOption)=>{
 		var firstOption = $(select).find('option')[0];
 		var lastOption = $(select).find('option').last();
-		$(firstOption).removeAttr('selected')
+		$(firstOption).removeAttr('selected');
 		$(lastOption).attr('selected', true);
 
 		var text =	$(lastOption).text();
