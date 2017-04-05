@@ -55,9 +55,9 @@
 	//agregando el atributo selected a la primera opción del select nativo a la primera carga de la web
 	fn.addSelectedFirsOption = () => {
 		$(st.select).each(function(i, e) {
-			fn.createItems(e, $(e).siblings(st.maskOption))
+			fn.createItems(e, $(e).siblings(st.maskOption));
 			var option = $(e).find(':selected');
-			firstOption = $(e).find('option')[0];
+			var firstOption = $(e).find('option')[0];
 			var textFirstOption =	$(firstOption).text();
 			var textSelected = $(option).text();
 			var containerText =	$(e).siblings(st.maskSelect).find(st.optionSelected)[0];
@@ -87,10 +87,15 @@
 
 	//Apeneando los valores de las opciones a la máscara
 	fn.createItems = (maskSelect, ul) => {
+		var icon = $(maskSelect).siblings(st.maskSelect).find('.js-iconSelected');
 		var QuantityItems = $(ul).find("li").length;
 		if (QuantityItems <= 0) {
 			$(maskSelect).find('option').each(function(i, e) {
-				$(ul).append('<li data-position="' + i + '"class="js-option">' + e.text + '</li>');
+				if (!icon.length) {
+					$(ul).append('<li data-position="' + i + '" class="js-option"><span class="js-option-text">' + e.text + '</span></li>');
+				}else{
+					$(ul).append('<li data-position="' + i + '" class="js-option"><span class="'+e.value+'"></span><span class="js-option-text">' + e.text + '</span></li>');
+				}
 			});
 		}
 	};
@@ -109,7 +114,7 @@
 	//Apeneando el valor de la opción seleccionada
 	fn.appendOptions = (e) => {
 		var target = e.target;
-		var value = $(target).text();
+		var value = $(target).find('.js-option-text').text();
 		var container = $(target).parents(dom.container).children(st.maskSelect).find(st.optionSelected);
 		fn.hoverOptions(target);
 		container.html(value);
@@ -134,7 +139,13 @@
 		var textOptionPrev = $(listOptionSelected).prev('li').text();
 		var textOptionSelected = $(target).find(st.optionSelected)[0]
 		var select = $(target).siblings('select');
-		var optionSelected = $(select).find('option:selected')[0];
+		var optionSelected = ""
+		var option = $(select).find('option');
+		$(option).each(function(i, element){
+			if ($(element).attr('selected')) {
+				optionSelected = element
+			}
+		});
 		var nextOption = $(optionSelected).next('option')[0];
 		var prevOption = $(optionSelected).prev('option')[0];
 		if (e.keyCode === st.keyDown) {

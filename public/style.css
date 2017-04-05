@@ -14,3 +14,34 @@ h1{
   max-width: 960px;
   margin: auto;
 }
+/* ejemplo de íconos */
+.option1{
+  width: 15px;
+  height: 15px;
+  background: #c2c2c2;
+  border-radius: 50%;
+}
+.option2{
+  width: 15px;
+  height: 15px;
+  background: #ffe8e8;
+  border-radius: 50%;
+}
+.option3{
+  width: 15px;
+  height: 15px;
+  background: #484848;
+  border-radius: 50%;
+}
+.option4{
+  width: 15px;
+  height: 15px;
+  background: #a6e2de;
+  border-radius: 50%;
+}
+.option5{
+  width: 15px;
+  height: 15px;
+  background: #00ada1;
+  border-radius: 50%;
+}
