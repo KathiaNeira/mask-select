@@ -1,240 +1,245 @@
+// * @Module: mask_select
+// * @Description: Módulo para las máscaras de las opciones de los select
+// * @author: Kathia Neira
+
 (function() {
 	var dom, st, catchDom, aftercatchDom, suscribeEvents, event, fn, initialize;
 	dom = {};
 	st = {
-		container: ".js-maskSelect", //contenedor de la estructura html del select
-		maskSelect: ".js-text-maskSelect", //elemento que contiene al nombre e ícono seleccionado
-		select: ".js-select-maskSelect", //select nativo
-		maskOption: ".js-option-maskSelect", //elemento donde se agregará el texto de la opción seleccionada
-		optionSelected: ".js-optionSelected", //elemento donde se creará la máscara de las opciones
+		container: '.js-maskSelect',
+		maskSelect: '.js-text-maskSelect',
+		select: '.js-select-maskSelect',
+		maskOption: '.js-option-maskSelect',
+		optionSelected: '.js-optionSelected',
 		keyEnter: 13,
-		keyEsc : 27,
-		keyDown : 38,
+		keyEsc: 27,
+		keyDown: 38,
 		keyUp: 40
 	};
 
-	catchDom = () => {
+	catchDom = function() {
 		dom.select = $(st.select);
 		dom.maskOption = $(st.maskOption);
 		dom.maskSelect = $(st.maskSelect);
 		dom.container = $(st.container);
 	};
 
-	aftercatchDom = () => {
+	aftercatchDom = function() {
 		fn.addSelectedFirsOption();
 	};
-	suscribeEvents = () => {
-		dom.maskSelect.on("click", event.onClick);
-		$(document).on("click", '.js-option', event.value);
-		$(window).on("click", event.closeMaskSelect);
+
+	suscribeEvents = function() {
+		dom.maskSelect.on('click', event.onClick);
+		$(document).on('click', '.js-option', event.value);
+		$(window).on('click', event.closeMaskSelect);
 		dom.maskSelect.on('keydown', event.keydown);
 	};
 
 	event = {};
 
-	event.value = (e) => {
+	event.value = function(e) {
 		fn.appendOptions(e);
 	};
 
-	event.onClick = (e) => {
+	event.onClick = function(e) {
 		fn.showHideOptions(e);
 	};
 
-	event.closeMaskSelect = (e) => {
-		$element = $(e.target)
-		if (!($element.hasClass('js-text-maskSelect')))
-			$(st.maskOption).removeClass('u-block')
+	event.closeMaskSelect = function(e) {
+		var $element;
+		$element = $(e.target);
+		if (!$element.hasClass('js-text-maskSelect')) {
+			$(st.maskOption).removeClass('u-block');
+		}
 	};
 
-	event.keydown = (e) => {
+	event.keydown = function(e) {
 		fn.addFocusOption(e);
 	};
 
 	fn = {};
 
-	//agregando el atributo selected a la primera opción del select nativo a la primera carga de la web
-	fn.addSelectedFirsOption = () => {
+	fn.addSelectedFirsOption = function() {
 		$(st.select).each(function(i, e) {
+			var containerText, firstOption, option, optionSelected, position, select, selectedItem, textFirstOption, textSelected;
 			fn.createItems(e, $(e).siblings(st.maskOption));
-			var option = $(e).find(':selected');
-			var firstOption = $(e).find('option')[0];
-			var textFirstOption =	$(firstOption).text();
-			var textSelected = $(option).text();
-			var containerText =	$(e).siblings(st.maskSelect).find(st.optionSelected)[0];
-			var select = $(e).siblings('ul')[0];
-			var optionSelected = $(select).find('li');
-			if (option[0] == firstOption) {
+			option = $(e).find(':selected');
+			firstOption = $(e).find('option')[0];
+			textFirstOption = $(firstOption).text();
+			textSelected = $(option).text();
+			containerText = $(e).siblings(st.maskSelect).find(st.optionSelected)[0];
+			select = $(e).siblings('ul')[0];
+			optionSelected = $(select).find('li');
+			if (option[0] === firstOption) {
 				$(firstOption).attr('selected', true);
 				$(containerText).html(textFirstOption);
-				$(optionSelected[0]).addClass('hover')
-			}else{
-				var position = $(option).index();
+				$(optionSelected[0]).addClass('hover');
+			} else {
+				position = $(option).index();
+				selectedItem = $(e).find('option')[position];
+				$(selectedItem).attr('selected', true);
 				$(containerText).html(textSelected);
 				$(optionSelected[position]).addClass('hover');
 			}
 		});
 	};
 
-	//Agregando el hover a la primera opción en la primera carga de la web
-	fn.addHoverFirstOption=(element)=>{
-		var ul = $(element).siblings('ul')[0];
-		var li = $(ul).find('li')[0];
-		var hover = $(ul).find('li').hasClass('hover');
+	fn.addHoverFirstOption = function(element) {
+		var hover, li, ul;
+		ul = $(element).siblings('ul')[0];
+		li = $(ul).find('li')[0];
+		hover = $(ul).find('li').hasClass('hover');
 		if (!hover) {
-			$(li).addClass('hover')
+			$(li).addClass('hover');
 		}
 	};
 
-	//Apeneando los valores de las opciones a la máscara
-	fn.createItems = (maskSelect, ul) => {
-		var icon = $(maskSelect).siblings(st.maskSelect).find('.js-iconSelected');
-		var QuantityItems = $(ul).find("li").length;
+	fn.createItems = function(maskSelect, ul) {
+		var QuantityItems, icon;
+		icon = $(maskSelect).siblings(st.maskSelect).find('[data-icon]');
+		QuantityItems = $(ul).find('li').length;
 		if (QuantityItems <= 0) {
 			$(maskSelect).find('option').each(function(i, e) {
 				if (!icon.length) {
 					$(ul).append('<li data-position="' + i + '" class="js-option"><span class="js-option-text">' + e.text + '</span></li>');
-				}else{
-					$(ul).append('<li data-position="' + i + '" class="js-option"><span class="'+e.value+'"></span><span class="js-option-text">' + e.text + '</span></li>');
+				} else {
+					$(ul).append('<li data-position="' + i + '" class="js-option"><span class="u-ico_category ' + e.value + '"></span><span class="js-option-text u-option-text">' + e.text + '</span></li>');
 				}
 			});
 		}
 	};
 
-	//Mostrando y ocultando la máscara
-	fn.showHideOptions = (e) => {
-		var target = e.target;
-		//buscando la máscara de las opciones
-		var siblings = $(target).siblings('select');
-		$(target).parents(st.container).siblings(st.container).find('ul').removeClass('u-block')
+	fn.showHideOptions = function(e) {
+		var select, siblings, target, ul;
+		target = e.target;
+		select = $(target).siblings('select');
+		ul = $(target).siblings('ul');
+		fn.createItems(select, ul);
+		siblings = $(target).siblings('select');
+		$(target).parents(st.container).siblings(st.container).find('ul').removeClass('u-block');
 		$(target).siblings(st.maskOption).toggleClass('u-block');
-		//buscando la primera opcion con el selected
 		fn.addHoverFirstOption(target);
 	};
 
-	//Apeneando el valor de la opción seleccionada
-	fn.appendOptions = (e) => {
-		var target = e.target;
-		var value = $(target).find('.js-option-text').text();
-		var container = $(target).parents(dom.container).children(st.maskSelect).find(st.optionSelected);
+	fn.appendOptions = function(e) {
+		var container, target, textFocus, value;
+		target = e.target;
+		value = $(target).find('.js-option-text').text();
+		container = $(target).parents(dom.container).children(st.maskSelect).find(st.optionSelected);
 		fn.hoverOptions(target);
 		container.html(value);
 		$(st.maskOption).removeClass('u-block');
-		var textFocus = $(target).parents('ul').siblings(st.maskSelect)[0];
+		textFocus = $(target).parents('ul').siblings(st.maskSelect)[0];
 		textFocus.focus();
 	};
 
-	//Agregar el focus a la opción seleccionada por el teclafo con la tecla down y up
-	fn.addFocusOption = (e) => {
-		var target = e.target;
-		var maskOption = $(target).siblings('ul')[0]
+	fn.addFocusOption = function(e) {
+		var listOption, listOptionSelected, maskOption, nextOption, option, optionSelected, prevOption, select, target, textOptionNext, textOptionPrev, textOptionSelected;
+		target = e.target;
+		maskOption = $(target).siblings('ul')[0];
 		fn.closeOptionWithEnter(e, maskOption);
-		var listOption = $(maskOption).find('li');
-		var listOptionSelected = ""
+		listOption = $(maskOption).find('li');
+		listOptionSelected = '';
 		$.each(listOption, function(i, e) {
 			if ($(e).hasClass('hover')) {
-				listOptionSelected = e
+				listOptionSelected = e;
 			}
 		});
-		var textOptionNext = $(listOptionSelected).next('li').text();
-		var textOptionPrev = $(listOptionSelected).prev('li').text();
-		var textOptionSelected = $(target).find(st.optionSelected)[0]
-		var select = $(target).siblings('select');
-		var optionSelected = ""
-		var option = $(select).find('option');
-		$(option).each(function(i, element){
+		textOptionNext = $(listOptionSelected).next('li').text();
+		textOptionPrev = $(listOptionSelected).prev('li').text();
+		textOptionSelected = $(target).find(st.optionSelected)[0];
+		select = $(target).siblings('select');
+		optionSelected = '';
+		option = $(select).find('option');
+		$(option).each(function(i, element) {
 			if ($(element).attr('selected')) {
-				optionSelected = element
+				optionSelected = element;
 			}
 		});
-		var nextOption = $(optionSelected).next('option')[0];
-		var prevOption = $(optionSelected).prev('option')[0];
+		nextOption = $(optionSelected).next('option')[0];
+		prevOption = $(optionSelected).prev('option')[0];
 		if (e.keyCode === st.keyDown) {
-			fn.prevOption(prevOption, select, listOption, optionSelected,listOptionSelected, textOptionSelected, textOptionPrev);
+			fn.prevOption(prevOption, select, listOption, optionSelected, listOptionSelected, textOptionSelected, textOptionPrev);
 		} else if (e.keyCode === st.keyUp) {
-			fn.nextOption(nextOption,select, listOption, optionSelected, listOptionSelected, textOptionSelected, textOptionNext);
+			fn.nextOption(nextOption, select, listOption, optionSelected, listOptionSelected, textOptionSelected, textOptionNext);
 		}
+		e.preventDefault();
 	};
 
-	//Eligiendo a la opción anterior
-	fn.nextOption=(nextOption,select, listOption, optionSelected, listOptionSelected, textOptionSelected, textOptionNext)=>{
+	fn.nextOption = function(nextOption, select, listOption, optionSelected, listOptionSelected, textOptionSelected, textOptionNext) {
 		if (!nextOption) {
 			fn.updatingOptionsDown(select, listOption);
-		}else{
+		} else {
 			fn.keyDown(optionSelected, nextOption, listOption, listOptionSelected, textOptionSelected, textOptionNext);
 		}
 	};
 
-	//Eligiendo a la opción siguiente
-	fn.prevOption = (prevOption, select, listOption, optionSelected,listOptionSelected, textOptionSelected, textOptionPrev)=>{
+	fn.prevOption = function(prevOption, select, listOption, optionSelected, listOptionSelected, textOptionSelected, textOptionPrev) {
 		if (!prevOption) {
 			fn.updatingOptionsUP(select, listOption);
-		}else{
+		} else {
 			fn.keyUp(optionSelected, prevOption, listOption, listOptionSelected, textOptionSelected, textOptionPrev);
 		}
 	};
 
-	//cerrar las opciones al dar enter
-	fn.closeOptionWithEnter = (e, mask) => {
-		var key = e.keyCode;
+	fn.closeOptionWithEnter = function(e, mask) {
+		var key;
+		key = e.keyCode;
 		if (key === st.keyEnter) {
-			$(mask).toggleClass('u-block')
-		}else if ((key === st.keyEsc) || (key === 9)) {
-			$(mask).removeClass('u-block')
+			$(mask).toggleClass('u-block');
+		} else if (key === st.keyEsc || key === 9) {
+			$(mask).removeClass('u-block');
 		}
 	};
 
-	//Agregando el efecto de selected a la máscara de opciones
-	fn.hoverOptions = (e) => {
-		var position = $(e).attr('data-position');
-		var foo = $(e).parents(st.maskOption).siblings('select').find('option').eq(position);
-		var option = $(e).parents(st.container).find(st.select).find('option');
+	fn.hoverOptions = function(e) {
+		var foo, option, position;
+		position = $(e).attr('data-position');
+		foo = $(e).parents(st.maskOption).siblings('select').find('option').eq(position);
+		option = $(e).parents(st.container).find(st.select).find('option');
 		$.each(option, function(i, attrName) {
 			$(attrName).removeAttr('selected');
 		});
 		$(foo[0]).attr('selected', true);
-		$(e).parents(st.maskOption).find('li').removeClass('hover')
+		$(e).parents(st.maskOption).find('li').removeClass('hover');
 		$(e).addClass('hover');
 	};
 
-	//volviendo a iterar las opciones down
-	fn.updatingOptionsDown = (select, listOption) => {
-		//fn.addSelectedFirsOption();
-		var firstOption = $(select).find('option')[0];
-		var lastOption = $(select).find('option').last();
-		$(lastOption).removeAttr('selected')
+	fn.updatingOptionsDown = function(select, listOption) {
+		var containerText, firstOption, lastOption, text;
+		firstOption = $(select).find('option')[0];
+		lastOption = $(select).find('option').last();
+		$(lastOption).removeAttr('selected');
 		$(firstOption).attr('selected', true);
-		var text =	$(firstOption).text();
-		var containerText =	$(select).siblings(st.maskSelect).find(st.optionSelected)[0];
+		text = $(firstOption).text();
+		containerText = $(select).siblings(st.maskSelect).find(st.optionSelected)[0];
 		$(containerText).html(text);
 		$(listOption).last().removeClass('hover');
 		$(listOption).first().addClass('hover');
 	};
 
-	//volviendo a iterar las opciones up
-	fn.updatingOptionsUP = (select, listOption)=>{
-		var firstOption = $(select).find('option')[0];
-		var lastOption = $(select).find('option').last();
+	fn.updatingOptionsUP = function(select, listOption) {
+		var containerText, firstOption, lastOption, text;
+		firstOption = $(select).find('option')[0];
+		lastOption = $(select).find('option').last();
 		$(firstOption).removeAttr('selected');
 		$(lastOption).attr('selected', true);
-
-		var text =	$(lastOption).text();
-		var containerText =	$(select).siblings(st.maskSelect).find(st.optionSelected)[0];
+		text = $(lastOption).text();
+		containerText = $(select).siblings(st.maskSelect).find(st.optionSelected)[0];
 		$(containerText).html(text);
 		$(listOption).first().removeClass('hover');
 		$(listOption).last().addClass('hover');
 	};
 
-	//Presionando la tecla down
-	fn.keyDown = (optionSelected, nextOption, listOption, listOptionSelected, textOptionSelected, textOptionNext) => {
+	fn.keyDown = function(optionSelected, nextOption, listOption, listOptionSelected, textOptionSelected, textOptionNext) {
 		$(optionSelected).removeAttr('selected');
 		$(nextOption).attr('selected', true);
-		$(listOption).removeClass('hover')
+		$(listOption).removeClass('hover');
 		$(listOptionSelected).next('li').addClass('hover');
 		$(textOptionSelected).html(textOptionNext);
 	};
 
-	//Presionando la tecla up
-	fn.keyUp =(optionSelected, prevOption, listOption, listOptionSelected, textOptionSelected, textOptionPrev)=>{
+	fn.keyUp = function(optionSelected, prevOption, listOption, listOptionSelected, textOptionSelected, textOptionPrev) {
 		$(optionSelected).removeAttr('selected');
 		$(prevOption).attr('selected', true);
 		$(listOption).removeClass('hover');
@@ -242,13 +247,11 @@
 		$(textOptionSelected).html(textOptionPrev);
 	};
 
-	initialize = () => {
+	initialize = function() {
 		catchDom();
 		aftercatchDom();
 		suscribeEvents();
-		console.log('mask Select');
 	};
-
 	return {
 		init: initialize
 	}

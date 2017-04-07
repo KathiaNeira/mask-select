@@ -3,6 +3,7 @@
   box-sizing: border-box;
 }
 body{
+  font-family: gotham,arial,sans-serif;
   background: #E2E2E2;
 }
 h1{
@@ -11,6 +12,7 @@ h1{
 .b-container{
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
   max-width: 960px;
   margin: auto;
 }
