@@ -3,7 +3,7 @@
 .u-maskSelect {
   position: relative;
   width: 150px;
-  margin-bottom: 50px;
+  margin-bottom: 150px;
 }
 .u-text-maskSelect {
   display: flex;
@@ -16,6 +16,7 @@
   border: 1px solid #c2c2c2;
   cursor: pointer;
   background: #fff;
+  outline: none;
 }
 .u-text-maskSelect span {
   pointer-events: none;

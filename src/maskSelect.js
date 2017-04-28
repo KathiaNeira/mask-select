@@ -151,6 +151,7 @@
 	fn.appendOptionSelected=(e)=>{
 		let target = e.target;
 		let container = $(target).parents(st.container);
+		let maskSelect = $(container).find(st.maskSelect);
 		let select = $(container).find('select');
 		let ul = $(container).find('ul');
 		let positionItems = $(target).index();
@@ -162,6 +163,8 @@
 		fn.appendTextOption(optionSelected);
 		$(ul).removeClass('u-block');
 		$(select).change();
+		console.log('container', container);
+		maskSelect.focus();
 	};
 
 	// removiendo el selected anterior
@@ -204,6 +207,7 @@
 				break;
 		}
 		$(select).change();
+		evt.preventDefault();
 	};
 
 	fn.upOption=(e,target, optionSelected)=>{
