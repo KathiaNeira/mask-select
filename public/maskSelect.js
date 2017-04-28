@@ -39,6 +39,7 @@
 		dom.maskSelect.on('click', event.onClick);
 		$(document).on('click', '.js-option', event.value);
 		dom.maskSelect.on('keydown', event.keydown);
+		$(window).on('click', event.closeMaskSelect);
 	};
 
 	event = {};
@@ -53,6 +54,14 @@
 
 	event.keydown = function (evt) {
 		fn.upAndDownOptions(evt);
+	};
+
+	event.closeMaskSelect = function (e) {
+		var $element;
+		$element = $(e.target);
+		if (!$element.hasClass('js-text-maskSelect')) {
+			$(st.maskOption).removeClass('u-block');
+		}
 	};
 
 	fn = {};
@@ -135,7 +144,17 @@
 	fn.showHideOptions = function (e) {
 		var target = e.target;
 		var ul = $(target).siblings('ul');
-		$(ul).toggleClass('u-block');
+		fn.removeBlockAllSelect(ul);
+	};
+
+	fn.removeBlockAllSelect = function (ul) {
+		$.each($(st.select).siblings('ul'), function (i, e) {
+			if (e === ul[0]) {
+				$(e).toggleClass('u-block');
+			} else {
+				$(e).removeClass('u-block');
+			}
+		});
 	};
 
 	fn.appendOptionSelected = function (e) {
@@ -149,7 +168,7 @@
 		$(optionSelected).attr('selected', true);
 		fn.removeHover(ul);
 		$(target).addClass(st.classHover);
-		fn.appendOption(optionSelected);
+		fn.appendTextOption(optionSelected);
 		$(ul).removeClass('u-block');
 		$(select).change();
 	};
