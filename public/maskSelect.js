@@ -68,9 +68,20 @@
 	// Inicializando el select
 	fn.initSelect = function () {
 		var optionsSelected = $.map($(st.select), fn.getOptionSelect);
-		var options = $.map($(st.select), fn.getOptions);
 		fn.appendOptionsMasks(optionsSelected);
-		fn.createItems(options);
+	};
+
+	// Mostrando y ocultando la máscara de opciones
+	fn.showHideOptions = function (e) {
+		var target = e.target;
+		var ul = $(target).siblings('ul');
+		var items = $(ul).find('li');
+		var options = $.map($(target).siblings(st.select), fn.getOptions);
+		var optionsSelected = $.each($(target).siblings(st.select).find('option'), fn.getOptionSelect);
+		if ($(items).length < 1) {
+			fn.createItems(options);
+		}
+		fn.removeBlockAllSelect(ul);
 		fn.addHoverOptionSelected(optionsSelected);
 	};
 
@@ -116,7 +127,9 @@
 	// Agregando efecto de selected a la máscara de opciones
 	fn.addHoverOptionSelected = function (optionsSelected) {
 		$.each(optionsSelected, function (i, e) {
-			fn.addHover(e);
+			if ($(e).attr('selected')) {
+				fn.addHover(e);
+			}
 		});
 	};
 
@@ -138,13 +151,6 @@
 		} else {
 			$(ul).append('<li data-position="' + i + '" class="js-option"><span class="u-ico_category ' + e.value + '"></span><span class="js-option-text u-option-text">' + e.text + '</span></li>');
 		}
-	};
-
-	// Mostrando y ocultando la máscara de opciones
-	fn.showHideOptions = function (e) {
-		var target = e.target;
-		var ul = $(target).siblings('ul');
-		fn.removeBlockAllSelect(ul);
 	};
 
 	fn.removeBlockAllSelect = function (ul) {
@@ -172,7 +178,6 @@
 		fn.appendTextOption(optionSelected);
 		$(ul).removeClass('u-block');
 		$(select).change();
-		console.log('container', container);
 		maskSelect.focus();
 	};
 
@@ -199,13 +204,15 @@
 				optionSelected = element;
 			}
 		});
-		fn.removeSelected(select);
+
 		var key = evt.keyCode;
 		switch (key) {
 			case KEY_UP:
+				fn.removeSelected(select);
 				fn.upOption(evt, target, optionSelected);
 				break;
 			case KEY_DOWN:
+				fn.removeSelected(select);
 				fn.downOption(evt, target, optionSelected);
 				break;
 			case KEY_ESC:

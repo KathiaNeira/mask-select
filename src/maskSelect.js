@@ -59,9 +59,20 @@
 	// Inicializando el select
 	fn.initSelect=()=>{
 		let optionsSelected = $.map($(st.select), fn.getOptionSelect);
-		let options = $.map($(st.select), fn.getOptions);
 		fn.appendOptionsMasks(optionsSelected);
-		fn.createItems(options);
+	};
+
+	// Mostrando y ocultando la máscara de opciones
+	fn.showHideOptions=(e)=>{
+		let target = e.target;
+		let ul = $(target).siblings('ul');
+		let items = $(ul).find('li');
+		let options = $.map($(target).siblings(st.select), fn.getOptions);
+		let optionsSelected = $.each($(target).siblings(st.select).find('option'), fn.getOptionSelect);
+		if ($(items).length < 1) {
+			fn.createItems(options);
+		}
+		fn.removeBlockAllSelect(ul);
 		fn.addHoverOptionSelected(optionsSelected);
 	};
 
@@ -107,7 +118,9 @@
 	// Agregando efecto de selected a la máscara de opciones
 	fn.addHoverOptionSelected=(optionsSelected)=>{
 		$.each(optionsSelected,(i,e)=>{
-			fn.addHover(e);
+			if ($(e).attr('selected')) {
+				fn.addHover(e);
+			}
 		})
 	};
 
@@ -131,12 +144,6 @@
 		}
 	};
 
-	// Mostrando y ocultando la máscara de opciones
-	fn.showHideOptions=(e)=>{
-		let target = e.target;
-		let ul = $(target).siblings('ul');
-		fn.removeBlockAllSelect(ul);
-	};
 
 	fn.removeBlockAllSelect=(ul)=>{
 		$.each($(st.select).siblings('ul'), (i,e)=>{
@@ -163,7 +170,6 @@
 		fn.appendTextOption(optionSelected);
 		$(ul).removeClass('u-block');
 		$(select).change();
-		console.log('container', container);
 		maskSelect.focus();
 	};
 
@@ -190,13 +196,15 @@
 				optionSelected = element;
 			}
 		});
-		fn.removeSelected(select);
+
 		let key = evt.keyCode;
 		switch(key){
 			case KEY_UP:
+				fn.removeSelected(select);
 				fn.upOption(evt, target, optionSelected);
 				break;
 			case KEY_DOWN:
+				fn.removeSelected(select);
 				fn.downOption(evt, target, optionSelected);
 				break;
 			case KEY_ESC:
